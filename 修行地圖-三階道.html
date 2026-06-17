@@ -1,0 +1,823 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>三階道 · 會歸淨土｜淨界法師修行地圖</title>
+<style>
+  :root{
+    /* 禅意纸本色板：米纸 / 暖墨 / 赭金单一点缀 */
+    --paper:#f4ecdb;       /* 米色纸本底 */
+    --paper-2:#fbf5e7;     /* 卡片浅纸 */
+    --paper-3:#fffdf5;     /* 模态最浅 */
+    --ink:#241d13;         /* 深暖墨（主文字） */
+    --ink-2:#564b3a;       /* 次墨 */
+    --muted:#897c66;       /* 灰墨说明 */
+    --rule:#d9ccb0;        /* 细线 */
+    --rule-2:#e8dcc2;
+    --gold:#a6782c;        /* 赭金·主点缀 */
+    --gold-2:#876018;      /* 赭金深（文字） */
+    --gold-soft:#c6973c;
+    --merit:#a6782c;       /* 願力＝赭金 */
+    --karma:#9a5a40;       /* 業力＝赭褐（沉，不刺眼） */
+    --ok-bg:#eef0db; --ok-bd:#7a8347;   /* 答对：橄榄 */
+    --no-bg:#f2e4d9; --no-bd:#9a5a40;   /* 答错：赭褐 */
+  }
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+  html,body{margin:0;padding:0;}
+  body{
+    font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Helvetica Neue",sans-serif;
+    background:
+      radial-gradient(130% 55% at 50% -8%, #fbf5e7 0, transparent 58%),
+      var(--paper);
+    color:var(--ink); line-height:1.65; min-height:100vh; padding-bottom:56px;
+    font-size:16px;
+  }
+  .wrap{max-width:660px;margin:0 auto;padding:20px 18px;}
+
+  /* 标题 */
+  .title-bar{text-align:center;padding:14px 12px 2px;}
+  .title-rule{width:42px;height:2px;background:var(--gold);margin:0 auto 14px;border-radius:1px;}
+  .title-bar h1{
+    font-family:"Songti SC","Source Han Serif SC",serif;
+    font-size:25px;font-weight:700;margin:0;letter-spacing:5px;color:var(--ink);
+  }
+  .title-bar .sub{font-size:13px;color:var(--muted);margin-top:9px;letter-spacing:.5px;}
+  .title-bar .sub em{font-style:normal;color:var(--gold-2);font-weight:600;}
+
+  /* 四阶进度（克制） */
+  .stages-strip{display:flex;align-items:center;justify-content:center;margin:18px 0 6px;font-size:12.5px;}
+  .stages-strip .seg{padding:4px 4px;color:var(--muted);transition:all .3s;position:relative;letter-spacing:1px;}
+  .stages-strip .seg.active{color:var(--gold-2);font-weight:600;}
+  .stages-strip .seg.active::after{content:'';position:absolute;left:50%;bottom:-2px;width:14px;height:2px;background:var(--gold);transform:translateX(-50%);border-radius:1px;}
+  .stages-strip .seg.done{color:var(--ink-2);}
+  .stages-strip .arr{color:var(--rule);margin:0 6px;font-size:10px;}
+
+  /* 願力 / 業力 */
+  .stats{
+    background:var(--paper-2);border:1px solid var(--rule);border-radius:6px;
+    padding:16px 18px;margin:10px 0 4px;
+  }
+  .bar-row{display:flex;align-items:center;gap:12px;font-size:14.5px;margin-bottom:10px;}
+  .bar-row:last-of-type{margin-bottom:0;}
+  .bar-label{width:48px;font-weight:600;flex-shrink:0;letter-spacing:1px;}
+  .bar-label.merit{color:var(--merit);}
+  .bar-label.karma{color:var(--karma);}
+  .bar-track{flex:1;height:12px;background:#e6d9bd;border-radius:6px;overflow:hidden;}
+  .bar-fill{height:100%;border-radius:6px;transition:width .5s cubic-bezier(.4,1.4,.5,1);}
+  .bar-fill.merit{background:linear-gradient(90deg,#d4a445,#a6782c);}
+  .bar-fill.karma{background:linear-gradient(90deg,#b06a4f,#9a5a40);}
+  .bar-val{width:40px;text-align:right;font-variant-numeric:tabular-nums;font-weight:700;flex-shrink:0;color:var(--ink);}
+  .verdict{
+    text-align:center;font-size:13.5px;margin-top:13px;padding-top:13px;
+    border-top:1px solid var(--rule-2);font-weight:600;letter-spacing:.5px;
+  }
+  .verdict.ok{color:var(--gold-2);}
+  .verdict.no{color:var(--karma);}
+  .stats-hint{font-size:12px;color:var(--muted);text-align:center;margin-top:11px;line-height:1.7;}
+  .stats-hint b{color:var(--gold-2);}
+
+  /* 阶位 */
+  .stage{padding:6px 0 10px;margin-top:26px;position:relative;}
+  .stage-head{text-align:center;margin-bottom:18px;}
+  .stage-seal{
+    display:inline-flex;align-items:center;justify-content:center;
+    width:36px;height:36px;border-radius:5px;
+    background:var(--gold);color:var(--paper-3);
+    font-family:"Songti SC",serif;font-size:18px;font-weight:700;
+    box-shadow:inset 0 0 0 1.5px rgba(255,255,255,.28);
+    margin-bottom:9px;letter-spacing:0;
+  }
+  .stage-name{font-family:"Songti SC",serif;font-size:20px;font-weight:700;letter-spacing:4px;color:var(--ink);}
+  .stage-sub{font-size:12.5px;color:var(--muted);margin-top:5px;letter-spacing:.5px;}
+  .stage-sub b{color:var(--ink-2);font-weight:600;}
+  .stage-head::after{content:'';display:block;width:60px;height:1px;background:var(--rule);margin:12px auto 0;}
+
+  /* 灯录式路径：空心圆 + 墨线 */
+  .nodes{display:flex;flex-direction:column;align-items:center;}
+  .link{width:2px;height:26px;background:var(--rule);margin:-2px 0;transition:background .4s;}
+  .link.active{background:var(--gold);}
+
+  .node{position:relative;width:130px;cursor:pointer;display:flex;flex-direction:column;align-items:center;padding:4px 2px;transition:transform .2s;}
+  .node:active{transform:scale(.97);}
+  .node.locked{cursor:not-allowed;}
+  .node.locked .node-dot,.node.locked .node-name,.node.locked .node-sub,.node.locked .node-tag{opacity:.4;}
+
+  .node-dot{
+    width:44px;height:44px;border-radius:50%;
+    background:var(--paper-2);
+    border:2px solid var(--ink);
+    transition:all .35s; position:relative;
+  }
+  /* 当前：空心墨圆 + 赭金灯笼光晕 */
+  .node.current .node-dot{
+    box-shadow:0 0 0 5px rgba(166,120,44,.16), 0 0 0 10px rgba(166,120,44,.07);
+    animation:pulse 2s ease-in-out infinite;
+  }
+  .node.current .node-dot::after{
+    content:'';position:absolute;left:50%;top:50%;width:8px;height:8px;border-radius:50%;
+    background:var(--gold);transform:translate(-50%,-50%);
+  }
+  @keyframes pulse{0%,100%{box-shadow:0 0 0 5px rgba(166,120,44,.16),0 0 0 10px rgba(166,120,44,.07);}50%{box-shadow:0 0 0 7px rgba(166,120,44,.22),0 0 0 14px rgba(166,120,44,.05);}}
+  /* 已通：赭金实心圆 + 纸色内核 */
+  .node.clear .node-dot{
+    background:var(--gold);border-color:var(--gold);
+    box-shadow:inset 0 0 0 3px var(--paper-2);
+  }
+  .node-name{font-family:"Songti SC",serif;font-size:15.5px;font-weight:700;margin-top:10px;text-align:center;letter-spacing:2px;color:var(--ink);}
+  .node-sub{font-size:11.5px;color:var(--muted);margin-top:3px;text-align:center;line-height:1.3;}
+  .node-tag{font-size:10.5px;margin-top:5px;letter-spacing:.5px;color:var(--muted);}
+  .node-tag.purify{color:var(--gold-2);font-weight:600;}
+
+  /* 终点·滿月 */
+  .endpoint{margin-top:34px;text-align:center;padding:26px 12px 24px;}
+  .endpoint.locked{opacity:.6;}
+  .moon{
+    width:84px;height:84px;border-radius:50%;margin:0 auto 14px;
+    background:var(--paper-2);border:2px solid var(--ink);
+    transition:all .6s; position:relative;
+  }
+  .endpoint:not(.locked) .moon{
+    background:radial-gradient(circle at 38% 32%, #e9c878, var(--gold) 70%);
+    border-color:var(--gold);
+    box-shadow:0 0 0 6px rgba(166,120,44,.14), 0 10px 30px rgba(166,120,44,.3);
+  }
+  .endpoint:not(.locked) .moon::after{
+    content:'淨';position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
+    font-family:"Songti SC",serif;font-size:30px;font-weight:700;color:var(--paper-3);letter-spacing:0;
+  }
+  .endpoint h3{font-family:"Songti SC",serif;font-size:20px;margin:0 0 6px;letter-spacing:4px;color:var(--ink);}
+  .endpoint p{font-size:12.5px;color:var(--muted);margin:2px auto;max-width:320px;line-height:1.7;}
+
+  /* Modal */
+  .modal-mask{position:fixed;inset:0;background:rgba(36,29,19,.5);display:flex;align-items:center;justify-content:center;z-index:50;padding:18px;opacity:0;pointer-events:none;transition:opacity .25s;-webkit-backdrop-filter:blur(3px);backdrop-filter:blur(3px);}
+  .modal-mask.show{opacity:1;pointer-events:auto;}
+  .modal{background:var(--paper-3);border:1px solid var(--rule);border-radius:8px;max-width:460px;width:100%;max-height:86vh;overflow-y:auto;box-shadow:0 24px 60px rgba(36,29,19,.28);transform:translateY(20px) scale(.97);transition:transform .3s cubic-bezier(.4,1.4,.5,1);}
+  .modal-mask.show .modal{transform:translateY(0) scale(1);}
+  .modal-head{padding:20px 22px 12px;border-bottom:1px solid var(--rule-2);}
+  .modal-tag{display:inline-block;font-size:11px;padding:3px 10px;border-radius:4px;margin-bottom:9px;letter-spacing:1.5px;background:var(--gold);color:var(--paper-3);font-weight:600;}
+  .modal-h2{font-size:20px;margin:0;font-weight:700;font-family:"Songti SC",serif;letter-spacing:2px;color:var(--ink);}
+  .modal-h2 .loc{color:var(--muted);font-size:12.5px;font-weight:400;margin-left:8px;letter-spacing:0;}
+  .modal-body{padding:16px 22px 22px;}
+  .quiz-progress{font-size:12px;color:var(--muted);margin-bottom:8px;letter-spacing:.5px;}
+  .modal-q{font-size:16.5px;margin:0 0 16px;line-height:1.6;color:var(--ink);}
+  .opt{display:block;width:100%;background:var(--paper-2);border:1.5px solid var(--rule);border-radius:7px;padding:13px 16px;margin-bottom:10px;font-size:15px;color:var(--ink);cursor:pointer;text-align:left;font-family:inherit;transition:all .18s;line-height:1.5;}
+  .opt:not(:disabled):active{transform:scale(.98);}
+  .opt:hover:not(:disabled){border-color:var(--gold);background:#fbf2dd;}
+  .opt.correct{background:var(--ok-bg);border-color:var(--ok-bd);color:#3f4a22;font-weight:600;}
+  .opt.wrong{background:var(--no-bg);border-color:var(--no-bd);color:#6e3a25;}
+  .opt:disabled{cursor:default;}
+  .feedback{margin-top:16px;padding:14px 16px;border-radius:7px;font-size:13.5px;line-height:1.65;display:none;}
+  .feedback.show{display:block;animation:fadeIn .4s;}
+  @keyframes fadeIn{from{opacity:0;transform:translateY(6px);}to{opacity:1;transform:translateY(0);}}
+  .feedback.ok{background:#f1f3e2;border-left:3px solid var(--ok-bd);}
+  .feedback.no{background:#f6ece2;border-left:3px solid var(--no-bd);}
+  .feedback .quote{font-family:"Songti SC",serif;font-size:14px;color:var(--ink);margin:8px 0;padding:9px 12px;background:rgba(255,253,245,.7);border-radius:5px;line-height:1.7;}
+  .feedback .src{font-size:11px;color:var(--muted);margin-top:8px;letter-spacing:.3px;}
+
+  /* 念诵 */
+  .chant-box{margin-top:14px;padding:18px 16px;background:linear-gradient(180deg,#fbf2dd,#f3e6c6);border:1px solid #e0c887;border-radius:8px;text-align:center;}
+  .chant-title{font-size:11.5px;color:var(--gold-2);margin-bottom:8px;letter-spacing:2px;font-weight:600;}
+  .chant-text{font-family:"Songti SC",serif;font-size:17px;color:var(--ink);line-height:1.9;margin:8px 0;letter-spacing:1px;}
+  .chant-text .bigger{font-size:20px;font-weight:700;color:var(--gold-2);}
+  .chant-desc{font-size:11.5px;color:var(--muted);margin-top:6px;}
+
+  .modal-foot{margin-top:16px;text-align:center;}
+  .btn{
+    background:var(--ink);color:var(--paper-3);border:none;border-radius:7px;
+    padding:13px 32px;font-size:15.5px;font-weight:600;font-family:inherit;cursor:pointer;
+    letter-spacing:2px;transition:all .15s;
+  }
+  .btn:active{transform:scale(.97);}
+  .btn:hover{background:var(--ink-2);}
+  .btn.ghost{background:transparent;border:1.5px solid var(--ink);color:var(--ink);}
+  .btn.ghost:hover{background:var(--paper-2);}
+  .btn.chant{background:transparent;border:1.5px solid var(--gold);color:var(--gold-2);margin-top:10px;}
+  .btn.chant:hover{background:#fbf2dd;}
+  .btn.final{background:var(--gold);color:#fff;padding:14px 36px;font-size:16.5px;box-shadow:0 6px 18px rgba(166,120,44,.32);}
+  .btn.final:hover{background:var(--gold-2);}
+
+  /* 结局 */
+  .ending{position:fixed;inset:0;z-index:100;display:none;flex-direction:column;align-items:center;justify-content:center;padding:34px;text-align:center;opacity:0;transition:opacity .6s;}
+  .ending.show{display:flex;opacity:1;}
+  .ending.win{background:radial-gradient(circle at 50% 32%, #fbf5e0, transparent 58%),linear-gradient(180deg,#f6efd9,#ead9b0);}
+  .ending.lose{background:linear-gradient(180deg,#eee9dc,#dfd7c4);}
+  .ending .moon-big{width:96px;height:96px;border-radius:50%;margin-bottom:18px;display:flex;align-items:center;justify-content:center;font-family:"Songti SC",serif;font-size:38px;font-weight:700;}
+  .ending.win .moon-big{background:radial-gradient(circle at 38% 32%,#ecc878,var(--gold) 70%);color:var(--paper-3);box-shadow:0 0 0 8px rgba(166,120,44,.16),0 14px 40px rgba(166,120,44,.34);}
+  .ending.lose .moon-big{background:#cbc1ab;color:#fff;box-shadow:0 0 0 6px rgba(0,0,0,.05);}
+  .ending h2{font-family:"Songti SC",serif;font-size:27px;margin:0 0 10px;letter-spacing:4px;}
+  .ending.win h2{color:var(--gold-2);}
+  .ending.lose h2{color:var(--ink-2);}
+  .ending p{font-size:14.5px;color:var(--ink);max-width:360px;margin:6px 0;line-height:1.75;}
+  .ending .quote-final{font-family:"Songti SC",serif;margin:18px 0;font-size:15px;color:var(--ink);padding:13px 20px;background:rgba(255,253,245,.7);border-radius:7px;line-height:1.8;border:1px solid var(--rule-2);}
+  .ending .btn{margin-top:14px;}
+
+  .toast{position:fixed;left:50%;top:50%;transform:translate(-50%,-50%);background:var(--ink);color:var(--paper-3);padding:12px 20px;border-radius:7px;font-size:13.5px;z-index:200;opacity:0;pointer-events:none;transition:opacity .3s;max-width:300px;text-align:center;box-shadow:0 10px 30px rgba(0,0,0,.25);letter-spacing:.5px;}
+  .toast.show{opacity:1;}
+  .float-num{position:fixed;font-weight:700;font-size:17px;pointer-events:none;z-index:150;animation:floatUp 1.2s ease-out forwards;font-family:"Songti SC",serif;}
+  @keyframes floatUp{0%{opacity:1;transform:translate(-50%,0);}100%{opacity:0;transform:translate(-50%,-44px);}}
+
+  footer{text-align:center;font-size:11.5px;color:var(--muted);margin-top:30px;line-height:1.8;padding:0 24px;}
+  footer b{color:var(--ink-2);}
+
+  /* 桌面端略放大 */
+  @media(min-width:560px){
+    .wrap{padding:26px 22px;}
+    .title-bar h1{font-size:27px;}
+  }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <div class="title-bar">
+    <div class="title-rule"></div>
+    <h1>三 階 道 · 會 歸 淨 土</h1>
+    <div class="sub">依 淨界法師「三種道次第」 · <em>願力強過業力</em> 方得往生</div>
+  </div>
+
+  <div class="stages-strip" id="stagesStrip"></div>
+
+  <div class="stats">
+    <div class="bar-row">
+      <span class="bar-label merit">願力</span>
+      <div class="bar-track"><div class="bar-fill merit" id="meritBar" style="width:50%"></div></div>
+      <span class="bar-val" id="meritVal">20</span>
+    </div>
+    <div class="bar-row">
+      <span class="bar-label karma">業力</span>
+      <div class="bar-track"><div class="bar-fill karma" id="karmaBar" style="width:50%"></div></div>
+      <span class="bar-val" id="karmaVal">20</span>
+    </div>
+    <div class="verdict ok" id="verdict">願力強過業力 ✓</div>
+    <div class="stats-hint">
+      通關：走完三階道，<b>臨終時 願力 &gt; 業力</b>　·　<b>懺悔</b>可消業　·　答錯可念誦一遍重答一次（每題限一次）
+    </div>
+  </div>
+
+  <div id="board"></div>
+
+  <div class="endpoint locked" id="endpoint">
+    <div class="moon"></div>
+    <h3>會歸淨土 · 往生判定</h3>
+    <p id="endpointHint">走完三階道，於臨終以願力強過業力，蒙佛接引。</p>
+  </div>
+
+  <footer>
+    題目答案均逐字源自淨界法師講記 skill（皈依／五戒／懺悔／佛法概要／唯識／小止觀／楞嚴／菩提心／起信論／天台／法華／淨土教觀／禪觀淨土／念佛圓通／彌陀經）<br>
+    道次第：安樂道（業感緣起）→ 解脫道（賴耶緣起）→ 菩提道（真如緣起·圓教）→ 會歸淨土。遊戲僅作複習助道，非教理定論。<br>
+    <b>註</b>：道次第為教理<b>呈現</b>次第，非往生<b>條件</b>——淨土但須信願（願力強過業力）即得往生，圓教之理可早熏習，不必待修滿前階。
+  </footer>
+</div>
+
+<!-- 答题 Modal -->
+<div class="modal-mask" id="modalMask">
+  <div class="modal">
+    <div class="modal-head">
+      <span class="modal-tag" id="mTag">安樂道</span>
+      <h2 class="modal-h2"><span id="mTitle">皈依</span><span class="loc" id="mLoc"></span></h2>
+    </div>
+    <div class="modal-body">
+      <div class="quiz-progress" id="mProgress"></div>
+      <p class="modal-q" id="mQ"></p>
+      <div id="mOpts"></div>
+      <div class="feedback" id="mFb"></div>
+      <div id="mChant"></div>
+      <div class="modal-foot" id="mFoot" style="display:none;"></div>
+    </div>
+  </div>
+</div>
+
+<!-- 结局 -->
+<div class="ending" id="ending">
+  <div class="moon-big" id="endMoon">淨</div>
+  <h2 id="endTitle"></h2>
+  <p id="endDesc"></p>
+  <div class="quote-final" id="endQuote"></div>
+  <button class="btn" onclick="resetGame()">重 新 發 心</button>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+/* ===========================================================
+   节点定义 —— 三阶道 + 会归净土，共 15 节点（线性道次第）
+   =========================================================== */
+const NODES = [
+  // 安乐道 · 业感缘起 · 断恶修善
+  { id:'guiyi',      name:'皈依',     sub:'信·入佛門',         stage:'anle',   level:'key' },
+  { id:'wujie',      name:'五戒',     sub:'戒·納戒體',         stage:'anle',   level:'key' },
+  { id:'chanhui',    name:'懺悔',     sub:'懺·道前基礎',       stage:'anle',   level:'key', purify:true },
+  // 解脱道 · 赖耶缘起 → 真如 · 破妄显真
+  { id:'fofa',       name:'佛法概要', sub:'總綱·破妄顯真',     stage:'jietuo', level:'key' },
+  { id:'weishi',     name:'唯識',     sub:'賴耶緣起·萬法唯識', stage:'jietuo', level:'key' },
+  { id:'xiaozhiguan',name:'小止觀',   sub:'止觀·實修手冊',     stage:'jietuo', level:'base' },
+  { id:'lengyan',    name:'楞嚴經',   sub:'解脫道·回光返照',   stage:'jietuo', level:'key' },
+  // 菩提道 · 真如缘起 · 圆教 · 从空出假
+  { id:'putixin',    name:'菩提心',   sub:'願·大乘發心',       stage:'puti',   level:'key' },
+  { id:'qixin',      name:'起信論',   sub:'真如緣起·一心二門', stage:'puti',   level:'key' },
+  { id:'tiantai',    name:'天台教觀', sub:'判教·藏通別圓',     stage:'puti',   level:'key' },
+  { id:'fahua',      name:'法華經',   sub:'圓教·一佛乘',       stage:'puti',   level:'key' },
+  // 会归净土 · 放弃主宰 · 皈依弥陀
+  { id:'jiaoguan',   name:'淨土教觀', sub:'三力·會歸',         stage:'jingtu', level:'key' },
+  { id:'changuan',   name:'禪觀淨土', sub:'願力強過業力',       stage:'jingtu', level:'key' },
+  { id:'yuantong',   name:'念佛圓通', sub:'都攝六根·淨念相繼', stage:'jingtu', level:'base' },
+  { id:'amituo',     name:'阿彌陀經', sub:'信願行·三資糧',     stage:'jingtu', level:'key' },
+];
+const ORDER = NODES.map(n=>n.id);
+const STAGES = [
+  { key:'anle',   seal:'安', name:'安樂道',   yuanqi:'業感緣起',      todo:'斷惡修善·處理業力' },
+  { key:'jietuo', seal:'解', name:'解脫道',   yuanqi:'賴耶緣起',      todo:'破妄顯真·處理思想' },
+  { key:'puti',   seal:'提', name:'菩提道',   yuanqi:'真如緣起·圓教', todo:'從空出假·廣度眾生' },
+  { key:'jingtu', seal:'淨', name:'會歸淨土', yuanqi:'放棄主宰',      todo:'皈依彌陀·願力強過業力' },
+];
+
+/* ===========================================================
+   题库 —— 重点节点2题，基础节点1题；答案逐字源自 skill 原文
+   =========================================================== */
+const QUIZ = {
+  guiyi:[
+    { q:'淨界法師引宗喀巴大師說：佛弟子所修的善業，若不與三皈依相應，就成了什麼？',
+      opts:['只是世間福報，等同「外道法」','完全沒有功德','會招感惡報','只能生天、不能解脫'],
+      ans:0, quote:'「一個佛弟子假設所修的善業，不跟三皈依相應，這個就是外道法。」', src:'guiyi-famen · 皈依為根本（第40行）' },
+    { q:'皈依的最高層次（理體皈依實相）是指什麼？',
+      opts:['只在佛前燒香拜佛求保佑','皈依自性——從「向外求佛救度」到「向內開顯自性」，心性與佛無二無別','供養越多功德越大','只皈依佛寶即可'],
+      ans:1, quote:'「從向外求佛救度，到向內開顯自性。」', src:'guiyi-famen · 皈依三層次（第99行）' },
+  ],
+  wujie:[
+    { q:'納受「戒體」的核心，不在死守戒條，而在什麼？',
+      opts:['背誦五戒條文一字不差','受戒時內心發起的誓願——誓斷惡、誓修善、誓度眾生','每天拜佛三百拜','不吃肉、不飲酒即可'],
+      ans:1, quote:'「以此要期之心，與彼妙法相應，領納在心，名為戒體。」', src:'wujie-xiuxue · 戒體（第46行）' },
+    { q:'受戒之後的善行，相比受戒前，最大的兩個差別是？',
+      opts:['數量更多、時間更長','「有本期誓」（願力持續引導）與「遍該生境」（對一切眾生普遍發心）','可以受人供養尊敬','不必再持戒、自然清淨'],
+      ans:1, quote:'受戒前善行臨時起意、不會相續；受戒後心中有願力持續引導，對十法界一切眾生普遍發心。', src:'wujie-xiuxue · 受戒前後差別（第35-36行）' },
+  ],
+  chanhui:[
+    { q:'在淨界法師的教學中，「懺悔法門」的定位是什麼？',
+      opts:['可有可無，重點在讀經','一切止觀的「道前基礎」——如推土機搬開路上石頭，不先處理罪業則寸步難行','只有出家眾才需要','用來累積福報'],
+      ans:1, quote:'「懺悔法門扮演『推土機』的角色——你有一台堅固的車子，但上路前必須先把路上的石頭搬開。」', src:'chanhui-famen · 定位（第46行）' },
+    { q:'「理懺」為何能滅業？其核心信念是？',
+      opts:['拜懺次數夠多就能消業','觀察「何期自性，本自清淨」——罪業是後來才有的如夢如幻法，故可消除','靠佛力直接替我消業','多布施修善可以抵銷罪業'],
+      ans:1, quote:'「理懺核心：觀察『何期自性，本自清淨』——罪業是後來才有的如夢如幻法，所以可以消除。」《楞嚴經》云：能修理觀修懺，「滅業障如翻大地」。', src:'chanhui-famen · 理懺（第160、231行）' },
+  ],
+  fofa:[
+    { q:'《佛法修學概要》中，整個佛法「重點中的重點」、破妄顯真的總綱，是哪兩句？',
+      opts:['諸惡莫作，眾善奉行','悟性真常，了惑虛妄','色即是空，空即是色','苦海無邊，回頭是岸'],
+      ans:1, quote:'「『悟性真常，了惑虛妄』这两句话是整个佛法概要重点中的重点。」', src:'fofa-xiuxue-gaiyao · 覺悟三次第（第161行）' },
+    { q:'「好人」與「道人」的根本區別在於？',
+      opts:['好人佈施、道人誦經','善念（由感覺觸動，心不決定）vs 善根（由智慧判斷，心決定）','好人在家、道人出家','好人修福、道人修慧'],
+      ans:1, quote:'「善念是由感觉触动的，一定要有外境的刺激，心是不决定的。但佛法的觉悟是决定性的。」', src:'fofa-xiuxue-gaiyao · 好人vs道人（第75行）' },
+  ],
+  weishi:[
+    { q:'三種緣起中，唯識屬於哪一種？其主張是？',
+      opts:['業感緣起，以業力為主導','真如緣起，達妄本空、知真本有','賴耶緣起，萬法唯識——一切法都是心識活動','不立緣起，純講唯心'],
+      ans:2, quote:'「賴耶緣起｜大乘唯識｜萬法唯識，一切法都是心識活動。」', src:'weishi-gaiyao · 三種緣起（第36-40行）' },
+    { q:'唯識說「自我意識、我執」的根本，來自哪一個識？',
+      opts:['前五識（感受）','第六意識（想像）','第七末那識——恆審思量，執第八識見分為「我」','第八阿賴耶識本身'],
+      ans:2, quote:'「恆審思量，執第八識見分為『我』。」第七末那識是自我意識的根源、一切煩惱的根本。', src:'weishi-gaiyao · 末那識（第53-55行）' },
+  ],
+  xiaozhiguan:[
+    { q:'《小止觀》（修習止觀坐禪法要）的定位與結構特色是？',
+      opts:['只有理論沒有實修方法','智者大師的止觀入門實修手冊，二十五方便＋正修，十科次第分明','專講念佛、不求開悟','只講坐姿、不講心法'],
+      ans:1, quote:'「修習止觀坐禪法要——以坐姿修習止觀，是初學者的下手方便。」', src:'xiao-zhiguan · 定位（第115行）' },
+  ],
+  lengyan:[
+    { q:'《楞嚴經》在「三種道次第」中的定位是？',
+      opts:['安樂道——積集善業','解脫道——回光返照，把凡夫世界提升到聖人世界','菩提道——從空出假、廣度眾生','與道次第無關'],
+      ans:1, quote:'「《楞嚴經》的定位就是解脫道——把過去凡夫的世界提升到聖人的世界。」', src:'lengyan-xiuxue-yaoyao · 三種道次第（第20行）' },
+    { q:'首楞嚴王三昧的實修檢驗標準是什麼？',
+      opts:['能否入深禪定、見種種瑞相','遇到事情時，能否「回光返照——把心帶回家」','能否持誦楞嚴咒十萬遍','能否終日不食不語'],
+      ans:1, quote:'「看你遇到事情的時候，是不是能夠開始回光返照——把心帶回家！」', src:'lengyan-xiuxue-yaoyao · 一心二門（第74行）' },
+  ],
+  putixin:[
+    { q:'從「業力修學」提升到「心念修學」、發菩提心的關鍵是什麼？',
+      opts:['多做善事累積資糧','先讓思考模式（種性）跟佛一致——「王子墜地，功超群臣」','每天誦經迴向','發願來生生天享福'],
+      ans:1, quote:'「王子墜地，功超群臣。」——你要做國王，第一件事是投生在國王家族；要成佛，先讓自己的思考模式跟佛一致。', src:'putixin-xiuxue · 種性決定結果（第48行）' },
+    { q:'出離心與菩提心的關係是？',
+      opts:['兩者無關，可分開修','沒有出離心的菩提心，是假的','有菩提心就不必修出離心','出離心只屬於小乘'],
+      ans:1, quote:'「沒有出離心的菩提心，是假的。」', src:'putixin-xiuxue · 發心（第119行）' },
+  ],
+  qixin:[
+    { q:'《大乘起信論》「一心二門」中的「二門」是指？',
+      opts:['生滅門與生死門（兩個心）','心真如門（不生不滅本體）與心生滅門（隨緣染淨）——同一心的兩面，非兩個心','空門與有門','頓門與漸門'],
+      ans:1, quote:'「不是兩個心，是同一個心的兩種面向。心真如門是『理』，心生滅門是『事』，理事不二。」', src:'dasheng-qixin-lun · 一心二門（第48行）' },
+    { q:'起信論說：要究竟滅業、了生死，唯有怎麼做？',
+      opts:['多拜懺、多行善','端坐觀實相——「一切業障海，皆由妄想生」','持誦萬遍佛號','求生天界享福'],
+      ans:1, quote:'「一切業障海，皆由妄想生。若欲懺悔者，端坐觀實相。」只是靠身口斷惡修善，不能消滅生死相續。', src:'dasheng-qixin-lun · 觀實相（第69、109行）' },
+  ],
+  tiantai:[
+    { q:'天台「化法四教」（教理內容）是哪四教？',
+      opts:['藏、通、別、圓','頓、漸、秘密、不定','小、中、大、密','空、假、中、圓'],
+      ans:0, quote:'「藏教（聲聞）｜通教（三乘）｜別教（菩薩）｜圓教（法華）。」', src:'tiantai-jiaoguan · 化法四教（第73-76行）' },
+    { q:'天台「一心三觀」是指哪三觀？',
+      opts:['過去觀、現在觀、未來觀','空觀、假觀、中觀（即空即假即中，圓融中道）','身觀、受觀、心觀','善觀、惡觀、無記觀'],
+      ans:1, quote:'「圓融中道——一心三觀，即空即假即中。」', src:'tiantai-jiaoguan · 一心三觀（第76行）' },
+  ],
+  fahua:[
+    { q:'《法華經》的核心——佛陀出世的一大事因緣是什麼？',
+      opts:['示現神通度眾生','開示悟入佛之知見，會三乘歸一佛乘','宣說戒律、規範僧團','講說因果報應'],
+      ans:1, quote:'「開示悟入佛之知見：佛陀出世的一大事因緣。」會三歸一——「汝等所行，是菩薩道」。', src:'fahua-lecture · 一大事因緣（第152、154行）' },
+    { q:'二乘的空觀與《法華》的空觀，根本區別是什麼？',
+      opts:['沒有區別，都是觀空','二乘「滅色取空」（心外求法、忘失大悲）；法華「內觀真如」（不壞假相、自然發菩提心）','二乘的空觀更深','法華不講空觀'],
+      ans:1, quote:'「法華的空觀是『內觀真如』而來……二乘的空觀是『滅色取空』而來。」', src:'fahua-lecture · 空觀辨別（第84行）' },
+  ],
+  jiaoguan:[
+    { q:'淨界法師說，整個淨土宗的核心思想，可以用哪八個字概括？',
+      opts:['多做善事，少造惡業','放棄主宰，皈依彌陀','誦經萬卷，自然成佛','苦修禁欲，求生天界'],
+      ans:1, quote:'「『放棄主宰，皈依彌陀』是整個淨土宗的核心思想。」', src:'jingtu-jiaoguan · 核心思想（第59行）' },
+    { q:'淨土念佛配合一心三觀，「三力」分別是？',
+      opts:['信力、願力、行力','空觀＝調伏力（走出過去·放棄主宰）；假觀＝引導力（開創未來·欣求極樂）；中觀＝安住力（安住真如）','布施力、持戒力、忍辱力','精進力、禪定力、智慧力'],
+      ans:1, quote:'「空觀｜調伏力——走出過去，放棄主宰；假觀｜引導力——開創未來，欣求極樂；中觀｜安住力——安住真如。」', src:'jingtu-jiaoguan · 三力（第47-49行）' },
+  ],
+  changuan:[
+    { q:'淨界法師說「往生只有一種情況」，是指？',
+      opts:['念佛數目必須達十萬','願力強過業力，沒有偶然','必須出家才能往生','臨終必須有人助念'],
+      ans:1, quote:'「往生只有一種情況：你的生命是願力強過業力……沒有第二種了，沒有偶然的東西。」', src:'changuan-jingtu · 核心命題（第143行）' },
+    { q:'「發心即是換跑道」這個比喻，是指什麼？',
+      opts:['換一座寺院修行','從「娑婆世界的跑道」換到「成佛的跑道」——是心作佛，是心是佛','從讀經換成念佛','從在家換成出家'],
+      ans:1, quote:'「你本來是跑在娑婆世界的跑道，現在該換跑道了——走在成佛的跑道上。」', src:'changuan-jingtu · 換跑道（第64行）' },
+  ],
+  yuantong:[
+    { q:'《大勢至菩薩念佛圓通章》的念佛方法總綱，是哪八個字？',
+      opts:['一心不亂，老實念佛','都攝六根，淨念相繼','口念耳聽，心不散亂','憶佛念佛，現前見佛'],
+      ans:1, quote:'「都攝六根，淨念相繼，得三摩地，斯為第一。」', src:'nianfo-yuantong-zhang · 念佛圓通（第91行）' },
+  ],
+  amituo:[
+    { q:'往生淨土的「三資糧」及其因果次第是？',
+      opts:['念佛為主，其他隨緣','信、願、行——「非信不足啟願，非願不足導行」','福德為主、智慧為輔','出家為主、在家為輔'],
+      ans:1, quote:'「非信不足啟願，非願不足導行，非持名妙行不足滿所願而證所信。」', src:'amituo-jing-daodu · 三資糧（第77行）' },
+    { q:'《阿彌陀經》主要接引哪一類眾生？',
+      opts:['只接上根利智','不定聚凡夫——心不決定，遇淨緣生善、遇染緣生惡，須以清淨佛法熏習三業','完全無善根之人','已證聖果之聖者'],
+      ans:1, quote:'「不定聚｜一般凡夫，心不決定｜遇淨緣生善、遇染緣生惡。」', src:'amituo-jing-daodu · 當機眾（第61行）' },
+  ],
+};
+
+/* 念诵内容 —— 均源自原文 */
+const CHANTS = {
+  default:{ title:'念誦一遍 · 清淨自心', text:'罪從心起將心懺<br>心若滅時罪亦亡<br><span class="bigger">心亡罪滅兩俱空<br>是則名為真懺悔</span>', desc:'— 理懺偈（出《觀普賢菩薩行法經》）' },
+  chanhui:{ title:'事懺偈 · 發露懺悔', text:'往昔所造諸惡業<br>皆由無始貪瞋癡<br><span class="bigger">從身語意之所生<br>一切我今皆懺悔</span>', desc:'— 事懺偈頌' },
+  lengyan:{ title:'持誦楞嚴咒心 · 破障顯真', text:'<span class="bigger">都弄母（Trum）</span><br>唵 · 阿那尼 · 微夏帝 · 帕特', desc:'— 楞嚴咒心種子字（riyue-tonghui）' },
+  jingtu_kind:{ title:'稱念一聲佛號 · 消業增願', text:'<span class="bigger">南無阿彌陀佛</span>', desc:'— 都攝六根，淨念相繼' },
+};
+function chantFor(id){
+  if(id==='chanhui') return CHANTS.chanhui;
+  if(id==='lengyan') return CHANTS.lengyan;
+  if(['jiaoguan','changuan','yuantong','amituo'].includes(id)) return CHANTS.jingtu_kind;
+  return CHANTS.default;
+}
+
+/* ===========================================================
+   游戏状态
+   =========================================================== */
+let state;
+function initState(){
+  state = {
+    merit:20, karma:20,
+    cleared:new Set(),
+    activeNode:null, quizQueue:[], quizIdx:0, correctCount:0,
+    retryUsed:false, quizAnswered:false,
+  };
+}
+
+/* ===========================================================
+   渲染棋盘
+   =========================================================== */
+function renderBoard(){
+  const board = document.getElementById('board');
+  board.innerHTML='';
+  STAGES.forEach(st=>{
+    const stageEl = document.createElement('div');
+    stageEl.className = 'stage';
+
+    const head = document.createElement('div');
+    head.className='stage-head';
+    head.innerHTML = `<div class="stage-seal">${st.seal}</div>
+      <div class="stage-name">${st.name}</div>
+      <div class="stage-sub"><b>${st.yuanqi}</b> · ${st.todo}</div>`;
+    stageEl.appendChild(head);
+
+    const nodesEl = document.createElement('div');
+    nodesEl.className='nodes';
+    const ids = ORDER.filter(id => NODES.find(n=>n.id===id).stage===st.key);
+    ids.forEach((id,idx)=>{
+      nodesEl.appendChild(makeNode(NODES.find(n=>n.id===id)));
+      if(idx < ids.length-1){
+        const link = document.createElement('div');
+        link.className='link'; link.dataset.from=id;
+        nodesEl.appendChild(link);
+      }
+    });
+    stageEl.appendChild(nodesEl);
+    board.appendChild(stageEl);
+  });
+  updateBoardState();
+}
+
+function makeNode(node){
+  const el = document.createElement('div');
+  el.className = 'node '+node.stage;
+  el.dataset.id = node.id;
+  const qCount = (QUIZ[node.id]||[]).length;
+  el.innerHTML = `
+    <div class="node-dot"></div>
+    <div class="node-name">${node.name}</div>
+    <div class="node-sub">${node.sub}</div>
+    <div class="node-tag ${node.purify?'purify':''}">${node.purify?'★ 答對消業':qCount+' 題'}</div>`;
+  el.addEventListener('click', ()=>onNodeClick(node.id));
+  return el;
+}
+
+function updateBoardState(){
+  const frontier = ORDER.find(id=>!state.cleared.has(id));
+  document.querySelectorAll('.node').forEach(el=>{
+    const id = el.dataset.id;
+    el.classList.remove('current','clear','locked');
+    if(state.cleared.has(id)) el.classList.add('clear');
+    if(id===frontier) el.classList.add('current');
+    if(!isReachable(id) && !state.cleared.has(id)) el.classList.add('locked');
+  });
+  document.querySelectorAll('.link').forEach(link=>{
+    link.classList.remove('active');
+    if(state.cleared.has(link.dataset.from)) link.classList.add('active');
+  });
+  renderStagesStrip(frontier);
+  const ep = document.getElementById('endpoint');
+  const allDone = ORDER.every(id=>state.cleared.has(id));
+  if(allDone){ ep.classList.remove('locked'); document.getElementById('endpointHint').textContent='三階道已圓滿——回到阿彌陀經節點，點「臨終一刻」揭曉往生。'; }
+  else { ep.classList.add('locked'); }
+  updateBars();
+}
+
+function renderStagesStrip(frontier){
+  const strip = document.getElementById('stagesStrip');
+  const frontierNode = frontier ? NODES.find(n=>n.id===frontier) : null;
+  strip.innerHTML='';
+  STAGES.forEach((st,i)=>{
+    const ids = ORDER.filter(id=>NODES.find(n=>n.id===id).stage===st.key);
+    const doneCount = ids.filter(id=>state.cleared.has(id)).length;
+    const seg = document.createElement('span');
+    seg.className='seg';
+    if(doneCount===ids.length) seg.classList.add('done');
+    if(frontierNode && frontierNode.stage===st.key) seg.classList.add('active');
+    seg.textContent = st.name.replace('道','').replace('會歸淨土','淨土');
+    strip.appendChild(seg);
+    if(i<STAGES.length-1){ const a=document.createElement('span'); a.className='arr'; a.textContent='·'; strip.appendChild(a); }
+  });
+}
+
+function isReachable(id){
+  if(id==='guiyi') return true;
+  const idx = ORDER.indexOf(id);
+  return idx>0 && state.cleared.has(ORDER[idx-1]);
+}
+
+function updateBars(){
+  const m=state.merit, k=state.karma;
+  const mx=Math.max(m,k,40);
+  document.getElementById('meritBar').style.width = (m/mx*100)+'%';
+  document.getElementById('karmaBar').style.width = (k/mx*100)+'%';
+  document.getElementById('meritVal').textContent = m;
+  document.getElementById('karmaVal').textContent = k;
+  const v = document.getElementById('verdict');
+  if(m>k){ v.className='verdict ok'; v.textContent='願力 '+m+' ＞ 業力 '+k+' · 臨終可期 ✓'; }
+  else { v.className='verdict no'; v.textContent='業力 '+k+' ≥ 願力 '+m+' · 危！需懺悔增願 ✗'; }
+}
+
+/* ===========================================================
+   点击节点
+   =========================================================== */
+function onNodeClick(id){
+  if(state.cleared.has(id)){ showReview(id); return; }
+  if(!isReachable(id)){ toast('此節點尚未開放，請依道次第前行。'); return; }
+  startQuiz(id);
+}
+
+function showReview(id){
+  const quizzes = QUIZ[id]; if(!quizzes||!quizzes.length) return;
+  const node = NODES.find(n=>n.id===id);
+  document.getElementById('mTag').textContent=stageName(node.stage);
+  document.getElementById('mTitle').textContent=node.name;
+  document.getElementById('mLoc').textContent=node.sub;
+  document.getElementById('mProgress').textContent='【已通過 · 溫故】';
+  let html='';
+  quizzes.forEach((q,i)=>{
+    html += `<div style="margin-bottom:16px;padding-bottom:12px;border-bottom:1px dashed var(--rule-2);">`;
+    html += `<div style="font-size:14px;margin-bottom:6px;line-height:1.55;">Q${i+1}. ${q.q}</div>`;
+    html += `<div style="font-size:13px;color:#3f4a22;">✓ ${q.opts[q.ans]}</div>`;
+    html += `<div style="font-family:'Songti SC',serif;font-size:13.5px;color:var(--ink);margin-top:5px;line-height:1.7;">${q.quote}</div>`;
+    html += `<div style="font-size:11px;color:var(--muted);">— ${q.src}</div></div>`;
+  });
+  document.getElementById('mQ').innerHTML=html;
+  document.getElementById('mOpts').innerHTML='';
+  const fb=document.getElementById('mFb'); fb.className='feedback'; fb.innerHTML='';
+  document.getElementById('mChant').innerHTML='';
+  const foot=document.getElementById('mFoot'); foot.style.display='block';
+  foot.innerHTML='<button class="btn ghost" onclick="closeModal()">繼續前行</button>';
+  document.getElementById('modalMask').classList.add('show');
+}
+
+function stageName(s){ return {anle:'安樂道',jietuo:'解脫道',puti:'菩提道',jingtu:'會歸淨土'}[s]; }
+
+/* ===========================================================
+   答题流程
+   =========================================================== */
+function startQuiz(id){
+  state.activeNode=id;
+  const all=QUIZ[id].slice(); shuffle(all);
+  state.quizQueue=all; state.quizIdx=0; state.correctCount=0;
+  renderCurrentQuiz();
+}
+
+function shuffle(arr){
+  for(let i=arr.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [arr[i],arr[j]]=[arr[j],arr[i]]; }
+}
+
+function renderCurrentQuiz(){
+  const id=state.activeNode;
+  const node=NODES.find(n=>n.id===id);
+  const quiz=state.quizQueue[state.quizIdx];
+  state.quizAnswered=false; state.retryUsed=false;
+
+  document.getElementById('mTag').textContent=stageName(node.stage);
+  document.getElementById('mTitle').textContent=node.name;
+  document.getElementById('mLoc').textContent=node.sub;
+  document.getElementById('mProgress').textContent = `第 ${state.quizIdx+1} / ${state.quizQueue.length} 題`;
+  document.getElementById('mQ').textContent = quiz.q;
+
+  const optsWithIdx = quiz.opts.map((o,i)=>({o,correct:i===quiz.ans}));
+  shuffle(optsWithIdx);
+  quiz._shuffled = optsWithIdx;
+
+  const optsEl=document.getElementById('mOpts'); optsEl.innerHTML='';
+  optsWithIdx.forEach((item,i)=>{
+    const btn=document.createElement('button');
+    btn.className='opt';
+    btn.textContent = String.fromCharCode(65+i)+'. '+item.o;
+    btn.onclick = ()=>answerQuiz(i,btn);
+    optsEl.appendChild(btn);
+  });
+  document.getElementById('mFb').className='feedback';
+  document.getElementById('mChant').innerHTML='';
+  document.getElementById('mFoot').style.display='none';
+  document.getElementById('modalMask').classList.add('show');
+}
+
+function answerQuiz(picked, btnEl){
+  if(state.quizAnswered) return;
+  state.quizAnswered=true;
+  const id=state.activeNode;
+  const node=NODES.find(n=>n.id===id);
+  const quiz=state.quizQueue[state.quizIdx];
+  const chosen=quiz._shuffled[picked];
+  const correct=chosen.correct;
+
+  document.querySelectorAll('.opt').forEach((o,i)=>{
+    o.disabled=true;
+    if(quiz._shuffled[i].correct) o.classList.add('correct');
+    if(i===picked && !correct) o.classList.add('wrong');
+  });
+
+  const fb=document.getElementById('mFb');
+  if(correct){
+    state.correctCount++;
+    const gain = 11 + Math.floor(Math.random()*4);
+    state.merit += gain;
+    let extra='';
+    if(node.purify){
+      const purify = 11 + Math.floor(Math.random()*4);
+      state.karma = Math.max(0, state.karma - purify);
+      extra = `<div style="color:var(--gold-2);font-weight:700;margin-top:4px;">🙏 懺悔滅業 · 業力 -${purify}</div>`;
+      floatNum('-'+purify,'karma',btnEl);
+    }
+    fb.className='feedback ok show';
+    fb.innerHTML = `<b>✓ 答對了，願力 +${gain}</b>${extra}<div class="quote">${quiz.quote}</div><div class="src">— ${quiz.src}</div>`;
+    floatNum('+'+gain,'merit',btnEl);
+    document.getElementById('mChant').innerHTML='';
+    showNextButton();
+  } else {
+    const loss = 6 + Math.floor(Math.random()*4);
+    state.karma += loss;
+    fb.className='feedback no show';
+    const correctOpt = quiz._shuffled.find(x=>x.correct);
+    fb.innerHTML = `<b>✗ 答錯了，業力 +${loss}</b><div style="margin-top:4px;">正解：<b>${correctOpt.o}</b></div><div class="quote">${quiz.quote}</div><div class="src">— ${quiz.src}</div>`;
+    floatNum('+'+loss,'karma',btnEl);
+    if(!state.retryUsed){ showChantBox(); } else { showNextButton(); }
+  }
+  updateBars();
+}
+
+function showChantBox(){
+  const chant = chantFor(state.activeNode);
+  document.getElementById('mChant').innerHTML = `
+    <div class="chant-box">
+      <div class="chant-title">念誦一遍 · 可重答一次</div>
+      <div class="chant-text">${chant.text}</div>
+      <div class="chant-desc">${chant.desc}</div>
+      <button class="btn chant" onclick="doChantRetry()">已誦 · 重新作答</button>
+    </div>`;
+  document.getElementById('mFoot').style.display='none';
+}
+
+function doChantRetry(){
+  state.retryUsed=true;
+  document.getElementById('mChant').innerHTML='';
+  const quiz=state.quizQueue[state.quizIdx];
+  const optsWithIdx = quiz.opts.map((o,i)=>({o,correct:i===quiz.ans}));
+  shuffle(optsWithIdx); quiz._shuffled=optsWithIdx;
+  const optsEl=document.getElementById('mOpts'); optsEl.innerHTML='';
+  optsWithIdx.forEach((item,i)=>{
+    const btn=document.createElement('button');
+    btn.className='opt';
+    btn.textContent=String.fromCharCode(65+i)+'. '+item.o;
+    btn.onclick=()=>answerQuiz(i,btn);
+    optsEl.appendChild(btn);
+  });
+  document.getElementById('mFb').className='feedback';
+  document.getElementById('mFoot').style.display='none';
+  state.quizAnswered=false;
+  toast('已誦 · 清淨自心，重新作答。');
+}
+
+function showNextButton(){
+  const foot=document.getElementById('mFoot');
+  foot.style.display='block';
+  const isLastQ = state.quizIdx >= state.quizQueue.length-1;
+  if(!isLastQ){
+    foot.innerHTML = `<button class="btn" onclick="nextQuiz()">下 一 題</button>`;
+  } else {
+    const id=state.activeNode;
+    state.cleared.add(id);
+    updateBoardState();
+    if(id==='amituo'){
+      foot.innerHTML = `<button class="btn final" onclick="revealEnding()">臨 終 一 刻</button>`;
+    } else {
+      foot.innerHTML = `<button class="btn" onclick="finishNode()">繼 續 前 行</button>`;
+    }
+  }
+}
+
+function nextQuiz(){ state.quizIdx++; renderCurrentQuiz(); }
+function finishNode(){ closeModal(); }
+
+function revealEnding(){
+  closeModal();
+  const win = state.merit > state.karma;
+  setTimeout(()=>showEnding(win), 420);
+}
+
+function closeModal(){ document.getElementById('modalMask').classList.remove('show'); }
+
+/* 提示与浮字 */
+let toastTimer;
+function toast(msg){
+  const t=document.getElementById('toast');
+  t.textContent=msg; t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer=setTimeout(()=>t.classList.remove('show'),2000);
+}
+function floatNum(text,kind,anchor){
+  const el=document.createElement('div');
+  el.className='float-num'; el.textContent=text;
+  el.style.color = kind==='merit'?'var(--gold-2)':'var(--karma)';
+  const rect=anchor.getBoundingClientRect();
+  el.style.left=(rect.left+rect.width/2)+'px';
+  el.style.top=(rect.top+10)+'px';
+  document.body.appendChild(el);
+  setTimeout(()=>el.remove(),1300);
+}
+
+/* 结局 —— 唯一判定：临终 願力 > 業力 */
+function showEnding(win){
+  const end=document.getElementById('ending');
+  end.className='ending '+(win?'win':'lose');
+  document.getElementById('endMoon').textContent = win?'淨':'迷';
+  if(win){
+    document.getElementById('endTitle').textContent='導歸極樂 · 臨終正念';
+    document.getElementById('endDesc').textContent = `願力 ${state.merit} ＞ 業力 ${state.karma}。你以願力強過業力，於臨終正念中蒙佛接引，往生淨土。一路走來，始終如一。`;
+    document.getElementById('endQuote').textContent = '「由內心的正念而帶動佛力的不可思議，由內而外，絕對不能由外而內。」';
+  } else {
+    document.getElementById('endTitle').textContent='業力現前 · 退轉娑婆';
+    document.getElementById('endDesc').textContent = `業力 ${state.karma} ≥ 願力 ${state.merit}。臨終正念難以維持。莫忘：你不是一張白紙開始修行——先處理過去，再規劃未來；多懺悔、增願力，再走一遭。`;
+    document.getElementById('endQuote').textContent = '「你不是一張白紙開始念佛——你流轉太久，內心留下很多負面思考。」';
+  }
+  end.classList.add('show');
+}
+
+function resetGame(){
+  initState();
+  document.getElementById('ending').classList.remove('show');
+  document.getElementById('modalMask').classList.remove('show');
+  renderBoard();
+}
+
+/* 启动 */
+initState();
+renderBoard();
+
+document.getElementById('modalMask').addEventListener('click', (e)=>{
+  if(e.target.id==='modalMask' && state.quizAnswered) closeModal();
+});
+</script>
+
+</body>
+</html>
