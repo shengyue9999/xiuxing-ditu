@@ -16,7 +16,7 @@
 
 ## 運行
 
-用瀏覽器直接開啟 `修行地圖-三階道.html` 即可，無需安裝、無需聯網。
+用瀏覽器直接開啟 `index.html` 即可，無需安裝、無需聯網。或在線遊玩：https://shengyue9999.github.io/xiuxing-ditu/
 
 ## 說明
 
