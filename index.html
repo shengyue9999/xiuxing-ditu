@@ -220,6 +220,16 @@
   footer{text-align:center;font-size:11.5px;color:var(--muted);margin-top:30px;line-height:1.8;padding:0 24px;}
   footer b{color:var(--ink-2);}
 
+  /* 枝叶深入入口 / 深解标记 / 实修落手 */
+  .deep-entry{font-size:11px;color:var(--gold-2);margin-top:6px;padding:3px 11px;border:1px solid var(--gold);border-radius:11px;letter-spacing:1px;background:rgba(166,120,44,.07);cursor:pointer;}
+  .deep-entry:hover{background:rgba(166,120,44,.16);}
+  .node.deep-done .node-dot{box-shadow:inset 0 0 0 3px var(--paper-2), 0 0 0 3px rgba(166,120,44,.5);}
+  .node.deep-done::after{content:'深';position:absolute;top:0;right:20px;font-family:"Songti SC",serif;font-size:10px;font-weight:700;color:#fff;background:var(--gold-2);width:19px;height:19px;border-radius:50%;display:flex;align-items:center;justify-content:center;letter-spacing:0;}
+  .practice-box{margin-top:14px;padding:13px 15px;background:linear-gradient(180deg,#fbf2dd,#f6ebcc);border:1px solid #e0c887;border-radius:8px;text-align:left;}
+  .practice-label{font-size:10.5px;color:var(--gold-2);letter-spacing:3px;font-weight:700;margin-bottom:6px;}
+  .practice-text{font-family:"Songti SC",serif;font-size:14.5px;color:var(--ink);line-height:1.8;}
+  .practice-src{font-size:10px;color:var(--muted);margin-top:6px;}
+
   /* 桌面端略放大 */
   @media(min-width:560px){
     .wrap{padding:26px 22px;}
@@ -266,7 +276,8 @@
   <footer>
     題目答案均逐字源自淨界法師講記 skill（皈依／五戒／懺悔／佛法概要／唯識／小止觀／楞嚴／菩提心／起信論／天台／法華／淨土教觀／禪觀淨土／念佛圓通／彌陀經）<br>
     道次第：安樂道（業感緣起）→ 解脫道（賴耶緣起）→ 菩提道（真如緣起·圓教）→ 會歸淨土。遊戲僅作複習助道，非教理定論。<br>
-    <b>註</b>：道次第為教理<b>呈現</b>次第，非往生<b>條件</b>——淨土但須信願（願力強過業力）即得往生，圓教之理可早熏習，不必待修滿前階。
+    <b>註</b>：道次第為教理<b>呈現</b>次第，非往生<b>條件</b>——淨土但須信願（願力強過業力）即得往生，圓教之理可早熏習，不必待修滿前階。<br>
+    通关节点可「＋深入」展開枝葉深度題（唯識／楞嚴／法華／起信／皈依），並見一句「實修落手」（皆法師原文）。進度自動存於本機。
   </footer>
 </div>
 
@@ -305,24 +316,24 @@
    =========================================================== */
 const NODES = [
   // 安乐道 · 业感缘起 · 断恶修善
-  { id:'guiyi',      name:'皈依',     sub:'信·入佛門',         stage:'anle',   level:'key' },
-  { id:'wujie',      name:'五戒',     sub:'戒·納戒體',         stage:'anle',   level:'key' },
-  { id:'chanhui',    name:'懺悔',     sub:'懺·道前基礎',       stage:'anle',   level:'key', purify:true },
+  { id:'guiyi',      name:'皈依',     sub:'信·入佛門',         stage:'anle',   level:'key', hasDeep:true, practice:{t:'在皈依佛、皈依法、皈依僧的基礎下修習善業，這個善業叫做波羅蜜多。', s:'guiyi-famen · 第97行'} },
+  { id:'wujie',      name:'五戒',     sub:'戒·納戒體',         stage:'anle',   level:'key', practice:{t:'重點不是背戒條，而是時時回到當初發願的那一念心。', s:'wujie-xiuxue · 第62行'} },
+  { id:'chanhui',    name:'懺悔',     sub:'懺·道前基礎',       stage:'anle',   level:'key', purify:true, practice:{t:'心能造業，心也能轉業。', s:'chanhui-famen · 第229行'} },
   // 解脱道 · 赖耶缘起 → 真如 · 破妄显真
-  { id:'fofa',       name:'佛法概要', sub:'總綱·破妄顯真',     stage:'jietuo', level:'key' },
-  { id:'weishi',     name:'唯識',     sub:'賴耶緣起·萬法唯識', stage:'jietuo', level:'key' },
-  { id:'xiaozhiguan',name:'小止觀',   sub:'止觀·實修手冊',     stage:'jietuo', level:'base' },
-  { id:'lengyan',    name:'楞嚴經',   sub:'解脫道·回光返照',   stage:'jietuo', level:'key' },
+  { id:'fofa',       name:'佛法概要', sub:'總綱·破妄顯真',     stage:'jietuo', level:'key', practice:{t:'先自覺才能覺他，次第不能錯。', s:'fofa-xiuxue-gaiyao · 第197行'} },
+  { id:'weishi',     name:'唯識',     sub:'賴耶緣起·萬法唯識', stage:'jietuo', level:'key', hasDeep:true, practice:{t:'感受來了→不取；想像→用佛號替代；執取→用空觀破。', s:'weishi-gaiyao · 第89-91行'} },
+  { id:'xiaozhiguan',name:'小止觀',   sub:'止觀·實修手冊',     stage:'jietuo', level:'base', practice:{t:'心是一期果報之主。譬如王有所至處，群賊迸散。', s:'xiao-zhiguan · 第117行'} },
+  { id:'lengyan',    name:'楞嚴經',   sub:'解脫道·回光返照',   stage:'jietuo', level:'key', hasDeep:true, practice:{t:'遇到事情的時候，是不是能夠開始回光返照——把心帶回家！', s:'lengyan-xiuxue-yaoyao · 第74行'} },
   // 菩提道 · 真如缘起 · 圆教 · 从空出假
-  { id:'putixin',    name:'菩提心',   sub:'願·大乘發心',       stage:'puti',   level:'key' },
-  { id:'qixin',      name:'起信論',   sub:'真如緣起·一心二門', stage:'puti',   level:'key' },
-  { id:'tiantai',    name:'天台教觀', sub:'判教·藏通別圓',     stage:'puti',   level:'key' },
-  { id:'fahua',      name:'法華經',   sub:'圓教·一佛乘',       stage:'puti',   level:'key' },
+  { id:'putixin',    name:'菩提心',   sub:'願·大乘發心',       stage:'puti',   level:'key', practice:{t:'先不談行為，先談種性。', s:'putixin-xiuxue · 第111行'} },
+  { id:'qixin',      name:'起信論',   sub:'真如緣起·一心二門', stage:'puti',   level:'key', hasDeep:true, practice:{t:'從因緣所生的假名假相假用中回歸真空體性；在空性上不妨礙修一切善。', s:'dasheng-qixin-lun · 第87、90行'} },
+  { id:'tiantai',    name:'天台教觀', sub:'判教·藏通別圓',     stage:'puti',   level:'key', practice:{t:'空觀安住離相、假觀借相修心、中觀空有不二發菩提願。', s:'jingjie-fashi · 一心三觀 · 第113-114行'} },
+  { id:'fahua',      name:'法華經',   sub:'圓教·一佛乘',       stage:'puti',   level:'key', hasDeep:true, practice:{t:'內觀真如＋外修六度＝蓮花式修行。', s:'fahua-lecture · 第28行'} },
   // 会归净土 · 放弃主宰 · 皈依弥陀
-  { id:'jiaoguan',   name:'淨土教觀', sub:'三力·會歸',         stage:'jingtu', level:'key' },
-  { id:'changuan',   name:'禪觀淨土', sub:'願力強過業力',       stage:'jingtu', level:'key' },
-  { id:'yuantong',   name:'念佛圓通', sub:'都攝六根·淨念相繼', stage:'jingtu', level:'base' },
-  { id:'amituo',     name:'阿彌陀經', sub:'信願行·三資糧',     stage:'jingtu', level:'key' },
+  { id:'jiaoguan',   name:'淨土教觀', sub:'三力·會歸',         stage:'jingtu', level:'key', practice:{t:'站在本來清淨、本來具足的角度來念佛。', s:'jingtu-jiaoguan · 第67行'} },
+  { id:'changuan',   name:'禪觀淨土', sub:'願力強過業力',       stage:'jingtu', level:'key', practice:{t:'由內心的正念帶動佛力，由內而外，絕對不能由外而內。', s:'changuan-jingtu · 第153行'} },
+  { id:'yuantong',   name:'念佛圓通', sub:'都攝六根·淨念相繼', stage:'jingtu', level:'base', practice:{t:'都攝六根，淨念相繼。', s:'nianfo-yuantong-zhang · 第91行'} },
+  { id:'amituo',     name:'阿彌陀經', sub:'信願行·三資糧',     stage:'jingtu', level:'key', practice:{t:'不定聚凡夫，以清淨佛法熏習身口意三業，非常重要。', s:'amituo-jing-daodu · 第94行'} },
 ];
 const ORDER = NODES.map(n=>n.id);
 const STAGES = [
@@ -452,6 +463,121 @@ const QUIZ = {
   ],
 };
 
+/* ===========================================================
+   枝叶深度题 —— 5 个富矿节点的横向展开，逐字源自 skill 原文
+   =========================================================== */
+const DEEP = {
+  guiyi:[
+    { q:'淨界法師說三寶各有「事相」與「理體」兩面。以「法寶」為例，下列何者正確？',
+      opts:['事相是經書文字，理體是內在的正念智慧','事相是佛像，理體是覺性','法寶只有事相、沒有理體','法寶的理體就是背誦經文'],
+      ans:0, quote:'「法｜經書文字｜內在的正念智慧。」', src:'guiyi-famen · 三寶事相/理體（第63-67行）' },
+    { q:'三寶之所以稱為「寶」，淨界法師列出哪三義？',
+      opts:['稀有難遇、能趨吉避凶、離苦得樂','價值昂貴、光芒耀眼、永不磨損','人人皆有、隨處可見、輕易可得','只佛弟子認識、外道不知、天人不管'],
+      ans:0, quote:'「『寶』的涵義：稀有難遇、能趨吉避凶、離苦得樂。」', src:'guiyi-famen · 寶之義（第69行）' },
+    { q:'皈依分「能皈依」與「所皈依」。「能皈依」是指什麼？',
+      opts:['我這一念願意投向三寶的心','佛、法、僧三寶','外在的寺院與儀式','授戒的戒師'],
+      ans:0, quote:'「能皈依｜我們這一念願意投向三寶的心；所皈依｜佛、法、僧三寶。」', src:'guiyi-famen · 能皈所皈（第56-59行）' },
+    { q:'皈依第二層「理體皈依空性」的要義是？',
+      opts:['知「能皈依的我」與「所皈依的三寶」本質皆因緣所生、自性空寂，把情感性皈依提升為智慧性皈依','否定三寶存在、空掉一切信仰','只在理上了解、不必實修','把皈依對象換成虛空'],
+      ans:0, quote:'「知道『能皈依的我』和『所皈依的三寶』，本質上都是因緣所生、自性空寂。從情感性的皈依，提升為智慧性的皈依。」', src:'guiyi-famen · 皈依空性（第83行）' },
+    { q:'淨界法師為何說皈依是「所有修行的一個根本」？',
+      opts:['失去皈依這個道，想要離苦得樂就變成不可能','因為皈依能換來世福報','因為只有皈依才能治病消災','因為不皈依會被護法責罰'],
+      ans:0, quote:'「皈依是所有修行的一個根本。你失去這個道，想要離苦得樂就變成不可能。」', src:'guiyi-famen · 皈依為根本（第93行）' },
+  ],
+  weishi:[
+    { q:'唯識「第一能變」第八阿賴耶識（異熟能變），「去後來先作主公」是指它的什麼角色？',
+      opts:['投胎時最先來、死亡時最後走，是一期果報的承載主體','一個永恆不變的靈魂真我','只負責當下的感受','在前五識之後才運作'],
+      ans:0, quote:'「去後來先作主公」——投胎時最先來、死亡時最後走，是一期果報的承載者。', src:'weishi-sanshisong · 第一能變（第37-38行）' },
+    { q:'第七末那識恆與「四根本煩惱」相應，是生死輪迴的根本動力。下列哪一組正確？',
+      opts:['我見、我愛、我慢、我癡','貪、瞋、癡、慢','疑、慢、見、取','怨、恨、惱、覆'],
+      ans:0, quote:'「四根本煩惱：我見、我愛、我慢、我癡」——是生死輪迴的根本動力。', src:'weishi-sanshisong · 第七識（第41-42行）' },
+    { q:'唯識立「三性」。其中「因緣所生法」（如暫時的身心現象）屬於哪一性？',
+      opts:['依他起性（因緣所生，是「事」）','遍計所執性（虛妄執著，是「妄」）','圓成實性（真如實相，是「理」）','無記性'],
+      ans:0, quote:'「遍計所執性（妄）｜依他起性（事）｜圓成實性（理）。」', src:'weishi-sanshisong · 三性三無性（第55-58行）' },
+    { q:'「轉識成智」中，「平等性智」是轉哪一個識而來？',
+      opts:['第七末那識（觀自他有情悉皆平等）','第八阿賴耶識（圓照法界）','第六意識（善觀諸法）','前五識（化度眾生）'],
+      ans:0, quote:'「平等性智｜轉第七識｜觀自他有情悉皆平等。」', src:'weishi-gaiyao · 四智菩提（第66-69行）' },
+    { q:'唯識修行的下手樞紐是哪一個識？為什麼？',
+      opts:['第六意識——靠它修我空觀法空觀，破第七識恆審思量，第七一破第八隨之轉變','第七末那識——直接破我執','第八阿賴耶識——從根本倉庫下手','前五識——從感受下手'],
+      ans:0, quote:'「我們用功主要還是第六意識……把第七意識的恆審思量給破壞了。第七意識恆審思量一破壞，第八識就轉變了。」', src:'bashi-guiju-song · 修行樞紐（第112、114行）' },
+    { q:'唯識「五位修行」中，「親證真如、登初地」是哪一位？',
+      opts:['通達位（真見道）','資糧位','加行位','究竟位（成佛）'],
+      ans:0, quote:'「通達位｜真見道——親證真如，登初地。」', src:'weishi-sanshisong · 五位修行（第66-70行）' },
+    { q:'《百法明門論》中，「色法」的定位是？',
+      opts:['心識所現之影，質礙為性（11種）','八識心王，了別為性（8種）','寂靜無造作的無為法（6種）','依色心分位假立的假法（24種）'],
+      ans:0, quote:'「色法｜11｜心識所現之影，質礙為性。」', src:'baifa-mingmen-lun · 五位百法（第52-57行）' },
+  ],
+  lengyan:[
+    { q:'《楞嚴經》「七處征心」，佛最先破阿難計「心在身內」，所用的譬喻是？',
+      opts:['如人在堂不見堂內（若心在身內，應先見內臟）','如人有眼不見睫毛','如水常流不住','如鏡照物無遺'],
+      ans:0, quote:'「一｜心在身內｜如人在堂不見堂內。」', src:'lengyan-jing · 七處征心（第58行）' },
+    { q:'《楞嚴經》結示「二本」。「菩提涅槃之本」是指？',
+      opts:['常住真心','攀緣心','妄想分別','外在境界'],
+      ans:0, quote:'「生死流轉之本：攀緣心；菩提涅槃之本：常住真心。」', src:'lengyan-xiuxue-yaoyao · 結示二本（第62-64行）' },
+    { q:'二十五圓通中，大勢至菩薩念佛圓通的總綱是？',
+      opts:['都攝六根，淨念相繼','反聞聞自性','觀鼻息長短','持咒降魔'],
+      ans:0, quote:'「大勢至菩薩念佛圓通章：都攝六根，淨念相繼。」', src:'lengyan-jing · 二十五圓通（第72行）' },
+    { q:'觀世音菩薩「耳根圓通」是「反聞聞自性」。文殊菩薩為何簡擇它最契合娑婆眾生？',
+      opts:['娑婆眾生耳根最利','娑婆眾生眼根最利','耳根圓通完全不用功','觀音願力最大所以選她'],
+      ans:0, quote:'「觀世音菩薩耳根圓通：反聞聞自性（娑婆眾生耳根最利）。文殊菩薩簡擇：耳根圓通最適合此方眾生。」', src:'lengyan-jing · 二十五圓通（第73-74行）' },
+    { q:'楞嚴對應天台「空假中三觀」，實際以哪三步操作？',
+      opts:['不迷（覺照本空）、不取（不攀緣）、不動（安住）','不食、不言、不視','不動身、不動口、不動意','不看、不聽、不想'],
+      ans:0, quote:'「對應天台空假中三觀，在楞嚴中以『不迷、不取、不動』操作。」', src:'lengyan-xiuxue-yaoyao · 三觀操作（第68行）' },
+    { q:'淨界法師說末法修行人為何應持楞嚴咒？',
+      opts:['過去生有冤親債主不樂見你修行，持咒如大白傘蓋保護自己、破除業障煩惱障','為了求感應瑞相','為了代替理觀、不必觀心','為了向人顯示功夫'],
+      ans:0, quote:'「你不要去傷害別人，但是你要懂得怎麼保護你自己——就是持咒。」（楞嚴咒：破障、大白傘蓋保護）', src:'lengyan-xiuxue-yingyong / riyue-tonghui（第53、93行）' },
+    { q:'《楞嚴經》卷九論五陰魔境，佛陀定下的根本原則是哪兩句？',
+      opts:['不作聖心，名善境界；若作聖解，即受群邪','凡所有相，皆是虛妄','寧可著有，不可著空','一念不生，全體顯現'],
+      ans:0, quote:'「不作聖心，名善境界；若作聖解，即受群邪。」', src:'lengyan-jing · 五陰魔境（第107行）' },
+  ],
+  fahua:[
+    { q:'《法華經》要我們「識如來權實二智」。下列敘述何者正確？',
+      opts:['權智＝三乘方便教法；實智＝一佛乘妙法。三乘是過程、一乘是目標，勿把休息站當終點','權智與實智是兩條路，可擇一而修','權智比實智更高','實智給凡夫、權智給菩薩'],
+      ans:0, quote:'「權智（方便智）是三乘教法；實智（真實智）是一佛乘的妙法。三乘是過程、一乘是目標，避免把中途休息站當成終點。」', src:'fahua-lecture · 權實二智（第239行）' },
+    { q:'「蓮華三喻」中，「為蓮故華」比喻什麼？',
+      opts:['為實施權——為了蓮子先開花，佛陀先說三乘權法','開權顯實——花開蓮現','廢權立實——花謝蓮成','花果各別、互不相干'],
+      ans:0, quote:'「為蓮故華（為實施權）：為了蓮子先開花，佛陀先說三乘權法。」', src:'fahua-lecture · 蓮華三喻（第52行）' },
+    { q:'「華開蓮現」所表的深義是？',
+      opts:['開權顯實——花開蓮子顯現，權實不二（同時）','先廢除權法、再顯實法','花與蓮子永遠分離','權實先後次第成就、不同時'],
+      ans:0, quote:'「華開蓮現（開權顯實）：花開蓮子顯現，權實不二。」', src:'fahua-lecture · 蓮華三喻（第53行）' },
+    { q:'「火宅喻」中，大富長者最後等賜諸子的「大白牛車」代表什麼？',
+      opts:['一佛乘（真實）——三車（羊鹿牛）只是引誘出離的方便','第四種更高級的車','辟支佛的果位','天人的福報'],
+      ans:0, quote:'「約行開三顯一：車喻修行，三車是權，大白牛車是實。」', src:'fahua-lecture · 火宅喻（第161-163行）' },
+    { q:'「化城喻」中的「化城」指什麼？',
+      opts:['二乘涅槃——佛陀神通力變現的暫時休息站，非真實終點','究竟佛果','極樂世界','天界宮殿'],
+      ans:0, quote:'「化城＝二乘涅槃：是佛陀神通力變現的暫時休息站，不是真實終點。」', src:'fahua-lecture · 化城喻（第190行）' },
+    { q:'《法華》二十八品分「跡門」與「本門」。下列何者正確？',
+      opts:['跡門（前14品）開權顯實講佛慧（成佛之因）；本門（後14品）開近顯遠講佛德（成佛之果）；因果同時','跡門講戒律、本門講禪定','跡門是小乘、本門是大乘','兩門毫無關係'],
+      ans:0, quote:'「跡門講成佛之『因』（智慧），本門講成佛之『果』（功德），因果同時啟動。」', src:'fahua-lecture · 跡本二門（第61、69、74行）' },
+    { q:'法華之「妙」有兩層。「絕待妙」是指？',
+      opts:['說無分別法，即邊而中，無非佛法（無可對待）','比阿含方等般若更殊勝（相對比較）','比其他經典篇幅更長','人人都能輕易讀懂'],
+      ans:0, quote:'「絕待妙：『說無分別法，即邊而中，無非佛法』，無可對待，強名為妙。」', src:'fahua-lecture · 妙法（第48行）' },
+    { q:'《法華》會上「五千退席」的是什麼人？為何退？',
+      opts:['增上慢比丘比丘尼——法執太重（已沾二乘堅固法執），聽不進會三歸一，故禮佛而退','根機太利的上根人，不必聽','完全無善根之人','天人捨不得天福'],
+      ans:0, quote:'「增上慢的比丘/比丘尼法執太重……聽不進『會三歸一』的思想，所以佛陀請他們先離開。這印證了法華經需要一開始就學。」', src:'fahua-lecture · 五千退席（第155、242行）' },
+  ],
+  qixin:[
+    { q:'《起信論》「三大」中，「體大」指什麼？',
+      opts:['心性本體，平等無差別（一切眾生真心無二無別）','如來藏具足無量功德','能生一切世出世間善法','後天修集的功德'],
+      ans:0, quote:'「體大｜心性本體，平等無差別。」', src:'dasheng-qixin-lun · 三大（第54行）' },
+    { q:'「相大」指什麼？',
+      opts:['如來藏本具無量功德（非修得）','心性本體平等','能生善法的功用','後天修集的福報'],
+      ans:0, quote:'「相大｜如來藏具足無量功德。」', src:'dasheng-qixin-lun · 三大（第55行）' },
+    { q:'「用大」指什麼？',
+      opts:['能生一切世間與出世間善法','心性本體平等','如來藏具足功德','空無一物不可用'],
+      ans:0, quote:'「用大｜能生一切世間出世間善法。」', src:'dasheng-qixin-lun · 三大（第56行）' },
+    { q:'《起信論》的大乘止觀，與小乘止觀的根本差別是？',
+      opts:['大乘更強調從空出假——不僅離苦，還要在空性中建立萬德莊嚴；小乘偏重從假入空','大乘只講空、不講有','小乘比大乘境界更高','大乘不必修空觀'],
+      ans:0, quote:'「小乘止觀偏重『從假入空』，大乘止觀更強調『從空出假』——不只是離開痛苦，還要在空性中建立萬德莊嚴。」', src:'dasheng-qixin-lun · 大乘止觀（第95行）' },
+    { q:'《大乘起信論》是哪幾個宗派的理論基石？',
+      opts:['天台（一心三觀）、華嚴（法界緣起）、禪宗（直指人心）皆溯源本論一心二門','唯識、中觀、俱舍三宗','淨土、律宗、密宗','只屬唯識宗一派'],
+      ans:0, quote:'「天台宗｜一心三觀的理論基礎；華嚴宗｜法界緣起的根本依據；禪宗｜直指人心、見性成佛的教理支撐。」', src:'dasheng-qixin-lun · 三宗共依（第77-79行）' },
+    { q:'淨界法師說《起信論》在教理上的定位是？',
+      opts:['唯識與如來藏思想的交匯點，也是從「解」到「行」的橋樑','純粹的小乘論典','與唯識完全對立、互不相干','只談理論、不談實修'],
+      ans:0, quote:'「《大乘起信論》是唯識與如來藏思想的交匯點，也是從『解』到『行』的橋樑。」', src:'dasheng-qixin-lun · 教學定位（第115、131行）' },
+  ],
+};
+
 /* 念诵内容 —— 均源自原文 */
 const CHANTS = {
   default:{ title:'念誦一遍 · 清淨自心', text:'罪從心起將心懺<br>心若滅時罪亦亡<br><span class="bigger">心亡罪滅兩俱空<br>是則名為真懺悔</span>', desc:'— 理懺偈（出《觀普賢菩薩行法經》）' },
@@ -470,14 +596,36 @@ function chantFor(id){
    游戏状态
    =========================================================== */
 let state;
+const SAVE_KEY='xiuxing-ditu-v2';
 function initState(){
   state = {
     merit:20, karma:20,
     cleared:new Set(),
-    activeNode:null, quizQueue:[], quizIdx:0, correctCount:0,
+    deepCleared:new Set(),
+    activeNode:null, activeMode:'main', quizQueue:[], quizIdx:0, correctCount:0,
     retryUsed:false, quizAnswered:false,
   };
+  loadState();
 }
+function saveState(){
+  try{
+    localStorage.setItem(SAVE_KEY, JSON.stringify({
+      merit:state.merit, karma:state.karma,
+      cleared:[...state.cleared], deepCleared:[...state.deepCleared]
+    }));
+  }catch(e){}
+}
+function loadState(){
+  try{
+    const raw=localStorage.getItem(SAVE_KEY); if(!raw) return;
+    const d=JSON.parse(raw);
+    state.merit=(typeof d.merit==='number')?d.merit:20;
+    state.karma=(typeof d.karma==='number')?d.karma:20;
+    state.cleared=new Set(d.cleared||[]);
+    state.deepCleared=new Set(d.deepCleared||[]);
+  }catch(e){}
+}
+function clearSave(){ try{ localStorage.removeItem(SAVE_KEY); }catch(e){} }
 
 /* ===========================================================
    渲染棋盘
@@ -518,12 +666,19 @@ function makeNode(node){
   el.className = 'node '+node.stage;
   el.dataset.id = node.id;
   const qCount = (QUIZ[node.id]||[]).length;
+  const deepCount=(DEEP[node.id]||[]).length;
+  let tag = node.purify?'★ 答對消業':(qCount+' 題');
+  if(node.hasDeep) tag += ' · 枝葉'+deepCount;
   el.innerHTML = `
     <div class="node-dot"></div>
     <div class="node-name">${node.name}</div>
     <div class="node-sub">${node.sub}</div>
-    <div class="node-tag ${node.purify?'purify':''}">${node.purify?'★ 答對消業':qCount+' 題'}</div>`;
+    <div class="node-tag ${node.purify?'purify':''}">${tag}</div>
+    ${node.hasDeep?'<div class="deep-entry" data-deep="'+node.id+'">＋ 深入 '+deepCount+' 題</div>':''}`;
   el.addEventListener('click', ()=>onNodeClick(node.id));
+  if(node.hasDeep){
+    el.querySelector('.deep-entry').addEventListener('click',(e)=>{ e.stopPropagation(); startDeep(node.id); });
+  }
   return el;
 }
 
@@ -531,10 +686,13 @@ function updateBoardState(){
   const frontier = ORDER.find(id=>!state.cleared.has(id));
   document.querySelectorAll('.node').forEach(el=>{
     const id = el.dataset.id;
-    el.classList.remove('current','clear','locked');
+    el.classList.remove('current','clear','locked','deep-done');
     if(state.cleared.has(id)) el.classList.add('clear');
+    if(state.deepCleared.has(id)) el.classList.add('deep-done');
     if(id===frontier) el.classList.add('current');
     if(!isReachable(id) && !state.cleared.has(id)) el.classList.add('locked');
+    const de=el.querySelector('.deep-entry');
+    if(de){ de.style.display = (state.cleared.has(id) && !state.deepCleared.has(id)) ? 'inline-block':'none'; }
   });
   document.querySelectorAll('.link').forEach(link=>{
     link.classList.remove('active');
@@ -581,6 +739,7 @@ function updateBars(){
   const v = document.getElementById('verdict');
   if(m>k){ v.className='verdict ok'; v.textContent='願力 '+m+' ＞ 業力 '+k+' · 臨終可期 ✓'; }
   else { v.className='verdict no'; v.textContent='業力 '+k+' ≥ 願力 '+m+' · 危！需懺悔增願 ✗'; }
+  saveState();
 }
 
 /* ===========================================================
@@ -610,20 +769,30 @@ function showReview(id){
   document.getElementById('mQ').innerHTML=html;
   document.getElementById('mOpts').innerHTML='';
   const fb=document.getElementById('mFb'); fb.className='feedback'; fb.innerHTML='';
-  document.getElementById('mChant').innerHTML='';
+  document.getElementById('mChant').innerHTML=practiceHtml(node);
   const foot=document.getElementById('mFoot'); foot.style.display='block';
   foot.innerHTML='<button class="btn ghost" onclick="closeModal()">繼續前行</button>';
   document.getElementById('modalMask').classList.add('show');
 }
 
 function stageName(s){ return {anle:'安樂道',jietuo:'解脫道',puti:'菩提道',jingtu:'會歸淨土'}[s]; }
+function practiceHtml(node){
+  const p=node.practice; if(!p) return '';
+  return `<div class="practice-box"><div class="practice-label">△ 實 修 落 手</div><div class="practice-text">「${p.t}」</div><div class="practice-src">— ${p.s}（法師原文）</div></div>`;
+}
 
 /* ===========================================================
    答题流程
    =========================================================== */
 function startQuiz(id){
-  state.activeNode=id;
+  state.activeNode=id; state.activeMode='main';
   const all=QUIZ[id].slice(); shuffle(all);
+  state.quizQueue=all; state.quizIdx=0; state.correctCount=0;
+  renderCurrentQuiz();
+}
+function startDeep(id){
+  state.activeNode=id; state.activeMode='deep';
+  const all=(DEEP[id]||[]).slice(); shuffle(all);
   state.quizQueue=all; state.quizIdx=0; state.correctCount=0;
   renderCurrentQuiz();
 }
@@ -638,9 +807,9 @@ function renderCurrentQuiz(){
   const quiz=state.quizQueue[state.quizIdx];
   state.quizAnswered=false; state.retryUsed=false;
 
-  document.getElementById('mTag').textContent=stageName(node.stage);
+  document.getElementById('mTag').textContent=stageName(node.stage)+(state.activeMode==='deep'?' · 枝葉':'');
   document.getElementById('mTitle').textContent=node.name;
-  document.getElementById('mLoc').textContent=node.sub;
+  document.getElementById('mLoc').textContent= state.activeMode==='deep' ? node.sub+' · 深入' : node.sub;
   document.getElementById('mProgress').textContent = `第 ${state.quizIdx+1} / ${state.quizQueue.length} 題`;
   document.getElementById('mQ').textContent = quiz.q;
 
@@ -744,15 +913,29 @@ function showNextButton(){
   const isLastQ = state.quizIdx >= state.quizQueue.length-1;
   if(!isLastQ){
     foot.innerHTML = `<button class="btn" onclick="nextQuiz()">下 一 題</button>`;
-  } else {
-    const id=state.activeNode;
-    state.cleared.add(id);
+    return;
+  }
+  const id=state.activeNode;
+  const node=NODES.find(n=>n.id===id);
+  if(state.activeMode==='deep'){
+    const bonus = 12 + Math.floor(Math.random()*5);
+    state.merit += bonus;
+    state.deepCleared.add(id);
     updateBoardState();
-    if(id==='amituo'){
-      foot.innerHTML = `<button class="btn final" onclick="revealEnding()">臨 終 一 刻</button>`;
-    } else {
-      foot.innerHTML = `<button class="btn" onclick="finishNode()">繼 續 前 行</button>`;
-    }
+    document.getElementById('mChant').innerHTML = `<div class="practice-box"><div class="practice-label">深 解 圓 成 · 願力 +${bonus}</div>${practiceHtml(node)}</div>`;
+    foot.innerHTML = `<button class="btn" onclick="finishNode()">收 攝 圓 滿</button>`;
+    floatNum('+'+bonus,'merit',foot);
+    updateBars();
+    toast('深解「'+node.name+'」· 願力增長。');
+    return;
+  }
+  state.cleared.add(id);
+  updateBoardState();
+  document.getElementById('mChant').innerHTML = practiceHtml(node);
+  if(id==='amituo'){
+    foot.innerHTML = `<button class="btn final" onclick="revealEnding()">臨 終 一 刻</button>`;
+  } else {
+    foot.innerHTML = `<button class="btn" onclick="finishNode()">繼 續 前 行</button>`;
   }
 }
 
@@ -804,6 +987,7 @@ function showEnding(win){
 }
 
 function resetGame(){
+  clearSave();
   initState();
   document.getElementById('ending').classList.remove('show');
   document.getElementById('modalMask').classList.remove('show');
